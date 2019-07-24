@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace MonoGameOnWpfCore.MonoGame
+namespace MonoGame.WpfCore.MonoGameControls
 {
     public class GraphicsDeviceEventArgs : EventArgs
     {

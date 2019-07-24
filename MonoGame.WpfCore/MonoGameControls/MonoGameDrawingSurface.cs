@@ -26,7 +26,7 @@ using System.Windows.Interop;
 using System.Windows.Media;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace MonoGameOnWpfCore.MonoGame
+namespace MonoGame.WpfCore.MonoGameControls
 {
     public sealed class MonoGameDrawingSurface : ContentControl, IDisposable
     {

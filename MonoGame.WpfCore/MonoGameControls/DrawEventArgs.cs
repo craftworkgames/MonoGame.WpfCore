@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 
-namespace MonoGameOnWpfCore.MonoGame
+namespace MonoGame.WpfCore.MonoGameControls
 {
     public sealed class DrawEventArgs : GraphicsDeviceEventArgs
     {
