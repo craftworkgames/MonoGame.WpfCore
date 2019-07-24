@@ -1,0 +1,31 @@
+﻿<Window x:Class="MonoGameOnWpfCore.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:monoGame="clr-namespace:MonoGameOnWpfCore.MonoGame"
+        mc:Ignorable="d"
+        Title="MainWindow" 
+        Width="800"
+        Height="480">
+    <DockPanel LastChildFill="True">
+        <StackPanel DockPanel.Dock="Left">
+            <Button Content="Button1" />
+            <Button Content="Button2" />
+            <Button Content="Button3" />
+        </StackPanel>
+        <monoGame:MonoGameDrawingSurface
+            x:Name="DrawingSurface"
+            AlwaysRefresh="True"
+            LoadContent="OnGraphicsControlLoadContent"
+            Draw="OnGraphicsControlDraw"
+            SizeChanged="DrawingSurface_OnSizeChanged"
+            MouseMove="OnGraphicsControlMouseMove"
+            MouseDown="DrawingSurface_OnMouseDown"
+            MouseUp="DrawingSurface_OnMouseUp"
+            MouseLeave="DrawingSurface_OnMouseLeave"
+            MouseWheel="OnGraphicsControlHwndMouseWheel"
+            KeyDown="OnGraphicsControlKeyDown"
+            KeyUp="OnGraphicsControlKeyUp" />
+    </DockPanel>
+</Window>
