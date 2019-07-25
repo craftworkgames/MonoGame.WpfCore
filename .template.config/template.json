@@ -1,0 +1,20 @@
+{
+    "$schema": "http://json.schemastore.org/template",
+    "author": "Dylan Wilson",
+    "classifications": ["MonoGame", "WPF"],
+    "identity": "CraftworkGames.MonoGame.WpfCore",
+    "name": "MonoGame WPF Application",
+    "shortName": "monogamewpf",
+    "sourceName": "MonoGame.WpfCore",
+    "sources": [{
+        "exclude": [
+            "**/.vs/**",
+            "**/bin/**",
+            "**/obj/**",
+            ".template.config/**/*",
+            ".git/**",
+            "**/.idea/**",
+            "**/*.user"
+        ]
+    }]
+}
