@@ -6,31 +6,23 @@ using SharpDX.Direct3D9;
 
 namespace MonoGame.WpfCore.MonoGameControls
 {
-    public class MonoGameGraphicsDeviceService : IGraphicsDeviceService, IDisposable
+    public class MonoGameWpfGraphicsDeviceService : IGraphicsDeviceService, IDisposable
     {
-        public Guid InstanceId { get; } = Guid.NewGuid();
-
-        public MonoGameGraphicsDeviceService()
+        public MonoGameWpfGraphicsDeviceService()
         {
-            if (Singleton != null)
-                throw new InvalidOperationException($"There can only be one instance of {nameof(MonoGameGraphicsDeviceService)}");
-
-            Singleton = this;
         }
 
-        public static MonoGameGraphicsDeviceService Singleton { get; private set; }
-
-        public Direct3DEx D3DContext { get; private set; }
-        public DeviceEx D3DDevice { get; private set; }
+        public Direct3DEx Direct3DContext { get; private set; }
+        public DeviceEx Direct3DDevice { get; private set; }
 
         public event EventHandler<EventArgs> DeviceCreated;
         public event EventHandler<EventArgs> DeviceDisposing;
         public event EventHandler<EventArgs> DeviceReset;
         public event EventHandler<EventArgs> DeviceResetting;
 
-        public void StartD3D(Window window)
+        public void StartDirect3D(Window window)
         {
-            D3DContext = new Direct3DEx();
+            Direct3DContext = new Direct3DEx();
 
             var presentParameters = new PresentParameters
             {
@@ -40,7 +32,7 @@ namespace MonoGame.WpfCore.MonoGameControls
                 PresentationInterval = SharpDX.Direct3D9.PresentInterval.Default
             };
 
-            D3DDevice = new DeviceEx(D3DContext, 0, DeviceType.Hardware, IntPtr.Zero,
+            Direct3DDevice = new DeviceEx(Direct3DContext, 0, DeviceType.Hardware, IntPtr.Zero,
                 CreateFlags.HardwareVertexProcessing | CreateFlags.Multithreaded | CreateFlags.FpuPreserve,
                 presentParameters);
 
@@ -57,8 +49,8 @@ namespace MonoGame.WpfCore.MonoGameControls
         {
             DeviceDisposing?.Invoke(this, EventArgs.Empty);
             GraphicsDevice.Dispose();
-            D3DDevice?.Dispose();
-            D3DContext?.Dispose();
+            Direct3DDevice?.Dispose();
+            Direct3DContext?.Dispose();
         }
 
         // Store the current device settings.
@@ -99,8 +91,7 @@ namespace MonoGame.WpfCore.MonoGameControls
                 _parameters.BackBufferWidth = newWidth;
                 _parameters.BackBufferHeight = newHeight;
 
-                // TODO
-                //GraphicsDevice.Reset(_parameters);
+                GraphicsDevice.Reset(_parameters);
 
                 DeviceReset?.Invoke(this, EventArgs.Empty);
             }
