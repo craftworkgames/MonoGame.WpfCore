@@ -11,6 +11,14 @@ namespace MonoGame.WpfCore.MonoGameControls
         public MonoGameWpfGraphicsDeviceService()
         {
         }
+        
+        public void Dispose()
+        {
+            DeviceDisposing?.Invoke(this, EventArgs.Empty);
+            GraphicsDevice.Dispose();
+            Direct3DDevice?.Dispose();
+            Direct3DContext?.Dispose();
+        }
 
         public Direct3DEx Direct3DContext { get; private set; }
         public DeviceEx Direct3DDevice { get; private set; }
@@ -44,15 +52,7 @@ namespace MonoGame.WpfCore.MonoGameControls
             GraphicsDevice = CreateGraphicsDevice(new WindowInteropHelper(window).Handle, 1, 1);
             DeviceCreated?.Invoke(this, EventArgs.Empty);
         }
-
-        public void Dispose()
-        {
-            DeviceDisposing?.Invoke(this, EventArgs.Empty);
-            GraphicsDevice.Dispose();
-            Direct3DDevice?.Dispose();
-            Direct3DContext?.Dispose();
-        }
-
+        
         // Store the current device settings.
         private PresentationParameters _parameters;
 

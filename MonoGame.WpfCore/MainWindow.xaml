@@ -5,11 +5,16 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:monoGameControls="clr-namespace:MonoGame.WpfCore.MonoGameControls"
+    xmlns:local="clr-namespace:MonoGame.WpfCore"
     mc:Ignorable="d"
     Title="MonoGame.WpfCore" 
     WindowStartupLocation="CenterScreen"
     Width="800"
     Height="480">
+    <Window.DataContext>
+        <local:MainWindowViewModel />
+    </Window.DataContext>
+
     <DockPanel LastChildFill="True">
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File">
@@ -36,18 +41,7 @@
                 <MenuItem Header="_About MonoGame.WpfCore" />
             </MenuItem>
         </Menu>
-        <monoGameControls:MonoGameDrawingSurface
-            x:Name="DrawingSurface"
-            AlwaysRefresh="True"
-            LoadContent="OnGraphicsControlLoadContent"
-            Draw="OnGraphicsControlDraw"
-            SizeChanged="DrawingSurface_OnSizeChanged"
-            MouseMove="OnGraphicsControlMouseMove"
-            MouseDown="DrawingSurface_OnMouseDown"
-            MouseUp="DrawingSurface_OnMouseUp"
-            MouseLeave="DrawingSurface_OnMouseLeave"
-            MouseWheel="OnGraphicsControlHwndMouseWheel"
-            KeyDown="OnGraphicsControlKeyDown"
-            KeyUp="OnGraphicsControlKeyUp" />
+
+        <monoGameControls:MonoGameDrawingSurface />
     </DockPanel>
 </Window>

@@ -19,19 +19,47 @@
 // THE SOFTWARE.
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interop;
 using System.Windows.Media;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+
+// ReSharper disable UnusedParameter.Global
 
 namespace MonoGame.WpfCore.MonoGameControls
 {
+    public interface IMonoGameDrawingSurfaceViewModel
+    {
+        IGraphicsDeviceService GraphicsDeviceService { get; set; }
+
+        void Initialize();
+        void LoadContent();
+        void UnloadContent();
+        void Update(GameTime gameTime);
+        void Draw(GameTime gameTime);
+        void OnActivated(object sender, EventArgs args);
+        void OnDeactivated(object sender, EventArgs args);
+        void OnExiting(object sender, EventArgs args);
+
+        void SizeChanged(object sender, SizeChangedEventArgs args);
+    }
+
     public sealed class MonoGameDrawingSurface : ContentControl, IDisposable
     {
         private static readonly MonoGameWpfGraphicsDeviceService _graphicsDeviceService = new MonoGameWpfGraphicsDeviceService();
-        private int _instanceCount = 0;
-        
+        private int _instanceCount;
+        private IMonoGameDrawingSurfaceViewModel _viewModel;
+        private readonly GameTime _gameTime = new GameTime();
+        private readonly Stopwatch _stopwatch = new Stopwatch();
+        private D3DImage _direct3DImage;
+        private RenderTarget2D _renderTarget;
+        private SharpDX.Direct3D9.Texture _renderTargetD3D9;
+        private bool _isFirstLoad = true;
+        private bool _isInitialized;
+
         public MonoGameDrawingSurface()
         {
             if (DesignerProperties.GetIsInDesignMode(this))
@@ -40,18 +68,16 @@ namespace MonoGame.WpfCore.MonoGameControls
             _instanceCount++;
             Loaded += OnLoaded;
             Unloaded += OnUnloaded;
-        }
-        
-        private D3DImage _direct3DImage;
-        private RenderTarget2D _renderTarget;
-        private SharpDX.Direct3D9.Texture _renderTargetD3D9;
-        private bool _contentNeedsRefresh = true;
-        private bool _isFirstLoad = true;
-        private bool _isInitialized;
+            DataContextChanged += (sender, args) =>
+            {
+                _viewModel = args.NewValue as IMonoGameDrawingSurfaceViewModel;
 
-        public event EventHandler<GraphicsDeviceEventArgs> LoadContent;
-        public event EventHandler<DrawEventArgs> Draw;
-        public bool AlwaysRefresh { get; set; }
+                if (_viewModel != null)
+                    _viewModel.GraphicsDeviceService = _graphicsDeviceService;
+            };
+            SizeChanged += (sender, args) => _viewModel?.SizeChanged(sender, args);
+        }
+
         public static GraphicsDevice GraphicsDevice => _graphicsDeviceService?.GraphicsDevice;
 
         public bool IsDisposed { get; private set; }
@@ -82,7 +108,19 @@ namespace MonoGame.WpfCore.MonoGameControls
             Dispose(false);
         }
 
-        private void Initialize()
+        protected override void OnGotFocus(RoutedEventArgs e)
+        {
+            _viewModel?.OnActivated(this, EventArgs.Empty);
+            base.OnGotFocus(e);
+        }
+
+        protected override void OnLostFocus(RoutedEventArgs e)
+        {
+            _viewModel?.OnDeactivated(this, EventArgs.Empty);
+            base.OnLostFocus(e);
+        }
+
+        private void Start()
         {
             if(_isInitialized)
                 return;
@@ -90,12 +128,14 @@ namespace MonoGame.WpfCore.MonoGameControls
             if (Application.Current.MainWindow == null)
                 throw new InvalidOperationException("The application must have a MainWindow");
 
+            Application.Current.MainWindow.Closing += (sender, args) => _viewModel?.OnExiting(this, EventArgs.Empty);
             Application.Current.MainWindow.ContentRendered += (sender, args) =>
             {
                 if (_isFirstLoad)
                 {
                     _graphicsDeviceService.StartDirect3D(Application.Current.MainWindow);
-                    LoadContent?.Invoke(this, new GraphicsDeviceEventArgs(_graphicsDeviceService));
+                    _viewModel?.Initialize();
+                    _viewModel?.LoadContent();
                     _isFirstLoad = false;
                 }
             };
@@ -104,11 +144,11 @@ namespace MonoGame.WpfCore.MonoGameControls
 
             AddChild(new Image { Source = _direct3DImage, Stretch = Stretch.None });
 
-            _direct3DImage.IsFrontBufferAvailableChanged += OnDirect3DImageIsFrontBufferAvailableChanged;
+            //_direct3DImage.IsFrontBufferAvailableChanged += OnDirect3DImageIsFrontBufferAvailableChanged;
 
             _renderTarget = CreateRenderTarget();
-            CompositionTarget.Rendering += OnCompositionTargetRendering;
-            _contentNeedsRefresh = true;
+            CompositionTarget.Rendering += OnRender;
+            _stopwatch.Start();
             _isInitialized = true;
         }
 
@@ -117,22 +157,22 @@ namespace MonoGame.WpfCore.MonoGameControls
             base.OnRenderSizeChanged(sizeInfo);
             
             // sometimes OnRenderSizeChanged happens before OnLoaded.
-            Initialize();
+            Start();
             ResetBackBufferReference();
-            _contentNeedsRefresh = true;
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
-            Initialize();
-            _contentNeedsRefresh = true;
+            Start();
         }
 
         private void OnUnloaded(object sender, RoutedEventArgs e)
         {
+            _viewModel?.UnloadContent();
+
             if (_graphicsDeviceService != null)
             {
-                CompositionTarget.Rendering -= OnCompositionTargetRendering;
+                CompositionTarget.Rendering -= OnRender;
                 ResetBackBufferReference();
                 _graphicsDeviceService.DeviceResetting -= OnGraphicsDeviceServiceDeviceResetting;
             }
@@ -141,7 +181,6 @@ namespace MonoGame.WpfCore.MonoGameControls
         private void OnGraphicsDeviceServiceDeviceResetting(object sender, EventArgs e)
         {
             ResetBackBufferReference();
-            _contentNeedsRefresh = true;
         }
 
         private void ResetBackBufferReference()
@@ -201,15 +240,12 @@ namespace MonoGame.WpfCore.MonoGameControls
             return renderTarget;
         }
 
-        private void OnDirect3DImageIsFrontBufferAvailableChanged(object sender, DependencyPropertyChangedEventArgs e)
+        private void OnRender(object sender, EventArgs e)
         {
-            if (_direct3DImage.IsFrontBufferAvailable)
-                _contentNeedsRefresh = true;
-        }
+            _gameTime.ElapsedGameTime = _stopwatch.Elapsed;
+            _gameTime.TotalGameTime += _gameTime.ElapsedGameTime;
 
-        private void OnCompositionTargetRendering(object sender, EventArgs e)
-        {
-            if ((_contentNeedsRefresh || AlwaysRefresh) && BeginDraw())
+            if (CanBeginDraw())
             {
                 try
                 {
@@ -222,12 +258,13 @@ namespace MonoGame.WpfCore.MonoGameControls
                     {
                         GraphicsDevice.SetRenderTarget(_renderTarget);
                         SetViewport();
-                        Draw?.Invoke(this, new DrawEventArgs(this, _graphicsDeviceService));
+
+                        _viewModel?.Update(_gameTime);
+                        _viewModel?.Draw(_gameTime);
+
                         GraphicsDevice.Flush();
                         _direct3DImage.AddDirtyRect(new Int32Rect(0, 0, (int)ActualWidth, (int)ActualHeight));
                     }
-
-                    _contentNeedsRefresh = false;
                 }
                 finally
                 {
@@ -237,7 +274,7 @@ namespace MonoGame.WpfCore.MonoGameControls
             }
         }
 
-        private bool BeginDraw()
+        private bool CanBeginDraw()
         {
             // If we have no graphics device, we must be running in the designer.
             if (_graphicsDeviceService == null)
@@ -291,11 +328,6 @@ namespace MonoGame.WpfCore.MonoGameControls
             }
 
             return true;
-        }
-
-        public void Invalidate()
-        {
-            _contentNeedsRefresh = true;
         }
     }
 }
