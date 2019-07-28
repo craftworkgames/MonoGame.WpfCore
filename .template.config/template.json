@@ -9,6 +9,7 @@
     "sources": [{
         "exclude": [
             "**/.vs/**",
+            "**/.github/**",
             "**/bin/**",
             "**/obj/**",
             ".template.config/**/*",
