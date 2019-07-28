@@ -27,31 +27,13 @@ using System.Windows.Media;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-// ReSharper disable UnusedParameter.Global
-
 namespace MonoGame.WpfCore.MonoGameControls
 {
-    public interface IMonoGameDrawingSurfaceViewModel
+    public sealed class MonoGameContentControl : ContentControl, IDisposable
     {
-        IGraphicsDeviceService GraphicsDeviceService { get; set; }
-
-        void Initialize();
-        void LoadContent();
-        void UnloadContent();
-        void Update(GameTime gameTime);
-        void Draw(GameTime gameTime);
-        void OnActivated(object sender, EventArgs args);
-        void OnDeactivated(object sender, EventArgs args);
-        void OnExiting(object sender, EventArgs args);
-
-        void SizeChanged(object sender, SizeChangedEventArgs args);
-    }
-
-    public sealed class MonoGameDrawingSurface : ContentControl, IDisposable
-    {
-        private static readonly MonoGameWpfGraphicsDeviceService _graphicsDeviceService = new MonoGameWpfGraphicsDeviceService();
+        private static readonly MonoGameGraphicsDeviceService _graphicsDeviceService = new MonoGameGraphicsDeviceService();
         private int _instanceCount;
-        private IMonoGameDrawingSurfaceViewModel _viewModel;
+        private IMonoGameViewModel _viewModel;
         private readonly GameTime _gameTime = new GameTime();
         private readonly Stopwatch _stopwatch = new Stopwatch();
         private D3DImage _direct3DImage;
@@ -60,7 +42,7 @@ namespace MonoGame.WpfCore.MonoGameControls
         private bool _isFirstLoad = true;
         private bool _isInitialized;
 
-        public MonoGameDrawingSurface()
+        public MonoGameContentControl()
         {
             if (DesignerProperties.GetIsInDesignMode(this))
                 return;
@@ -70,7 +52,7 @@ namespace MonoGame.WpfCore.MonoGameControls
             Unloaded += OnUnloaded;
             DataContextChanged += (sender, args) =>
             {
-                _viewModel = args.NewValue as IMonoGameDrawingSurfaceViewModel;
+                _viewModel = args.NewValue as IMonoGameViewModel;
 
                 if (_viewModel != null)
                     _viewModel.GraphicsDeviceService = _graphicsDeviceService;
@@ -103,7 +85,7 @@ namespace MonoGame.WpfCore.MonoGameControls
             IsDisposed = true;
         }
 
-        ~MonoGameDrawingSurface()
+        ~MonoGameContentControl()
         {
             Dispose(false);
         }
@@ -244,6 +226,7 @@ namespace MonoGame.WpfCore.MonoGameControls
         {
             _gameTime.ElapsedGameTime = _stopwatch.Elapsed;
             _gameTime.TotalGameTime += _gameTime.ElapsedGameTime;
+            _stopwatch.Restart();
 
             if (CanBeginDraw())
             {

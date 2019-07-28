@@ -6,9 +6,9 @@ using SharpDX.Direct3D9;
 
 namespace MonoGame.WpfCore.MonoGameControls
 {
-    public class MonoGameWpfGraphicsDeviceService : IGraphicsDeviceService, IDisposable
+    public class MonoGameGraphicsDeviceService : IGraphicsDeviceService, IDisposable
     {
-        public MonoGameWpfGraphicsDeviceService()
+        public MonoGameGraphicsDeviceService()
         {
         }
         
