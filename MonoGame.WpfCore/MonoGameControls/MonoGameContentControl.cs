@@ -75,6 +75,7 @@ namespace MonoGame.WpfCore.MonoGameControls
             if (IsDisposed)
                 return;
 
+            _viewModel?.Dispose();
             _renderTarget?.Dispose();
             _renderTargetD3D9?.Dispose();
             _instanceCount--;

@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace MonoGame.WpfCore.MonoGameControls
 {
-    public interface IMonoGameViewModel
+    public interface IMonoGameViewModel : IDisposable
     {
         IGraphicsDeviceService GraphicsDeviceService { get; set; }
 
@@ -24,8 +24,16 @@ namespace MonoGame.WpfCore.MonoGameControls
 
     public class MonoGameViewModel : ViewModel, IMonoGameViewModel
     {
-        public IGraphicsDeviceService GraphicsDeviceService { get; set; }
+        public MonoGameViewModel()
+        {
+        }
 
+        public void Dispose()
+        {
+            Content?.Dispose();
+        }
+
+        public IGraphicsDeviceService GraphicsDeviceService { get; set; }
         protected GraphicsDevice GraphicsDevice => GraphicsDeviceService?.GraphicsDevice;
         protected MonoGameServiceProvider Services { get; private set; }
         protected ContentManager Content { get; set; }
