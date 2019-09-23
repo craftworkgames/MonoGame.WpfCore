@@ -6,12 +6,11 @@ MonoGame embedded inside a WPF app as a `dotnet new` template.
 
 ## Prerequisites
 
-This template uses .NET Core 3.0 preview features. Make sure you've done the following:
+This template uses .NET Core 3.0. If you're having trouble getting it to compile make sure you've updated to the latest version. I have confirmed that it works with:
 
- - Install [.NET Core 3.0](https://dotnet.microsoft.com/download/dotnet-core/3.0) (currently in preview)
- - You can use Visual Studio 2019 but you'll also need to enable **Use previews of the .NET Core SDK**.
-
-![Use previews of the .NET Core SDK](.template.config/enable-dotnet-core-preview.png)
+ - Visual Studio 2019 v16.3 or later.
+ - [.NET Core 3.0.100](https://dotnet.microsoft.com/download/dotnet-core/3.0) which should install with Visual Studio anyway.
+ - The MonoGame NuGet packages are not .NET Core compatible, so you'll also need .NET Framework 4.7.2 installed.
 
 ## Installing the template
 
