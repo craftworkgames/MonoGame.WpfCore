@@ -7,8 +7,8 @@ namespace MonoGame.WpfCore
 {
     public class MainWindowViewModel : MonoGameViewModel
     {
-        private SpriteBatch _spriteBatch;
-        private Texture2D _texture;
+        private SpriteBatch _spriteBatch = default!;
+        private Texture2D _texture = default!;
         private Vector2 _position;
         private float _rotation;
         private Vector2 _origin;

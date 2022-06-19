@@ -1,15 +1,15 @@
 ﻿// Copyright (c) 2010-2013 SharpDX - Alexandre Mutel
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -17,6 +17,7 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -31,14 +32,14 @@ namespace MonoGame.WpfCore.MonoGameControls
 {
     public sealed class MonoGameContentControl : ContentControl, IDisposable
     {
-        private static readonly MonoGameGraphicsDeviceService _graphicsDeviceService = new MonoGameGraphicsDeviceService();
+        private readonly MonoGameGraphicsDeviceService _graphicsDeviceService = new MonoGameGraphicsDeviceService();
         private int _instanceCount;
-        private IMonoGameViewModel _viewModel;
+        private IMonoGameViewModel? _viewModel;
         private readonly GameTime _gameTime = new GameTime();
         private readonly Stopwatch _stopwatch = new Stopwatch();
-        private D3DImage _direct3DImage;
-        private RenderTarget2D _renderTarget;
-        private SharpDX.Direct3D9.Texture _renderTargetD3D9;
+        private D3DImage _direct3DImage = default!;
+        private RenderTarget2D? _renderTarget;
+        private SharpDX.Direct3D9.Texture? _renderTargetD3D9;
         private bool _isFirstLoad = true;
         private bool _isInitialized;
 
@@ -57,10 +58,10 @@ namespace MonoGame.WpfCore.MonoGameControls
                 if (_viewModel != null)
                     _viewModel.GraphicsDeviceService = _graphicsDeviceService;
             };
-            SizeChanged += (sender, args) => _viewModel?.SizeChanged(sender, args);
         }
 
-        public static GraphicsDevice GraphicsDevice => _graphicsDeviceService?.GraphicsDevice;
+        public GraphicsDevice GraphicsDevice => _graphicsDeviceService?.GraphicsDevice!;
+        public Window Window { get; init; } = App.Current.MainWindow;
 
         public bool IsDisposed { get; private set; }
 
@@ -108,37 +109,36 @@ namespace MonoGame.WpfCore.MonoGameControls
             if(_isInitialized)
                 return;
 
-            if (Application.Current.MainWindow == null)
-                throw new InvalidOperationException("The application must have a MainWindow");
+            if (Window == null)
+                throw new InvalidOperationException("The application must have a Window");
 
-            Application.Current.MainWindow.Closing += (sender, args) => _viewModel?.OnExiting(this, EventArgs.Empty);
-            Application.Current.MainWindow.ContentRendered += (sender, args) =>
+            Window.Closing += (sender, args) => _viewModel?.OnExiting(this, EventArgs.Empty);
+            Window.ContentRendered += (sender, args) =>
             {
                 if (_isFirstLoad)
                 {
-                    _graphicsDeviceService.StartDirect3D(Application.Current.MainWindow);
+                    _graphicsDeviceService.StartDirect3D(Window);
                     _viewModel?.Initialize();
                     _viewModel?.LoadContent();
                     _isFirstLoad = false;
                 }
             };
-            
+
             _direct3DImage = new D3DImage();
 
             AddChild(new Image { Source = _direct3DImage, Stretch = Stretch.None });
-
-            //_direct3DImage.IsFrontBufferAvailableChanged += OnDirect3DImageIsFrontBufferAvailableChanged;
 
             _renderTarget = CreateRenderTarget();
             CompositionTarget.Rendering += OnRender;
             _stopwatch.Start();
             _isInitialized = true;
+            SizeChanged += (sender, args) => _viewModel?.SizeChanged(sender, args);
         }
 
         protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
         {
             base.OnRenderSizeChanged(sizeInfo);
-            
+
             // sometimes OnRenderSizeChanged happens before OnLoaded.
             Start();
             ResetBackBufferReference();
@@ -161,7 +161,7 @@ namespace MonoGame.WpfCore.MonoGameControls
             }
         }
 
-        private void OnGraphicsDeviceServiceDeviceResetting(object sender, EventArgs e)
+        private void OnGraphicsDeviceServiceDeviceResetting(object? sender, EventArgs e)
         {
             ResetBackBufferReference();
         }
@@ -188,7 +188,7 @@ namespace MonoGame.WpfCore.MonoGameControls
             _direct3DImage.Unlock();
         }
 
-        private RenderTarget2D CreateRenderTarget()
+        private RenderTarget2D? CreateRenderTarget()
         {
             var actualWidth = (int)ActualWidth;
             var actualHeight = (int)ActualHeight;
@@ -223,13 +223,13 @@ namespace MonoGame.WpfCore.MonoGameControls
             return renderTarget;
         }
 
-        private void OnRender(object sender, EventArgs e)
+        private void OnRender(object? sender, EventArgs e)
         {
             _gameTime.ElapsedGameTime = _stopwatch.Elapsed;
             _gameTime.TotalGameTime += _gameTime.ElapsedGameTime;
             _stopwatch.Restart();
 
-            if (CanBeginDraw())
+            if (!_isFirstLoad && CanBeginDraw())
             {
                 try
                 {
@@ -254,6 +254,7 @@ namespace MonoGame.WpfCore.MonoGameControls
                 {
                     _direct3DImage.Unlock();
                     GraphicsDevice.SetRenderTarget(null);
+                    _viewModel?.AfterRender();
                 }
             }
         }

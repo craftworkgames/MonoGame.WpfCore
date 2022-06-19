@@ -17,7 +17,7 @@ namespace MonoGame.WpfCore.MonoGameControls
             _services.Add(type, provider);
         }
 
-        public object GetService(Type type)
+        public object? GetService(Type type)
         {
             if (_services.TryGetValue(type, out var service))
                 return service;
@@ -31,6 +31,7 @@ namespace MonoGame.WpfCore.MonoGameControls
         }
 
         public void AddService<T>(T service)
+        where T : notnull
         {
             AddService(typeof(T), service);
         }
@@ -38,7 +39,7 @@ namespace MonoGame.WpfCore.MonoGameControls
         public T GetService<T>() where T : class
         {
             var service = GetService(typeof(T));
-            return (T) service;
+            return (T) service!;
         }
     }
 }
