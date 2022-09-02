@@ -3,6 +3,9 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.WpfCore.MonoGameControls;
 
+
+using gamelib;
+
 namespace MonoGame.WpfCore
 {
     public class MainWindowViewModel : MonoGameViewModel
@@ -16,6 +19,8 @@ namespace MonoGame.WpfCore
 
         public override void LoadContent()
         {
+
+   
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _texture = Content.Load<Texture2D>("monogame-logo");
         }
@@ -30,7 +35,7 @@ namespace MonoGame.WpfCore
 
         public override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Yellow);
 
             _spriteBatch.Begin();
             _spriteBatch.Draw(_texture, _position, null, Color.White, _rotation, _origin, _scale, SpriteEffects.None, 0f);

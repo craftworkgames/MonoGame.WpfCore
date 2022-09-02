@@ -93,20 +93,20 @@ namespace MonoGame.WpfCore.MonoGameControls
 
         protected override void OnGotFocus(RoutedEventArgs e)
         {
-            _viewModel?.OnActivated(this, EventArgs.Empty);
+                        _viewModel?.OnActivated(this, EventArgs.Empty);
             base.OnGotFocus(e);
         }
 
         protected override void OnLostFocus(RoutedEventArgs e)
         {
-            _viewModel?.OnDeactivated(this, EventArgs.Empty);
-            base.OnLostFocus(e);
+                              _viewModel?.OnDeactivated(this, EventArgs.Empty);
+                    base.OnLostFocus(e);
         }
 
         private void Start()
         {
-            if(_isInitialized)
-                return;
+         //   if(_isInitialized)
+            //    return;
 
             if (Application.Current.MainWindow == null)
                 throw new InvalidOperationException("The application must have a MainWindow");
@@ -123,9 +123,9 @@ namespace MonoGame.WpfCore.MonoGameControls
                 }
             };
             
-            _direct3DImage = new D3DImage();
+                _direct3DImage = new D3DImage();
 
-            AddChild(new Image { Source = _direct3DImage, Stretch = Stretch.None });
+                Content = new Image { Source = _direct3DImage, Stretch = Stretch.None };
 
             //_direct3DImage.IsFrontBufferAvailableChanged += OnDirect3DImageIsFrontBufferAvailableChanged;
 
@@ -137,10 +137,10 @@ namespace MonoGame.WpfCore.MonoGameControls
 
         protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
         {
-            base.OnRenderSizeChanged(sizeInfo);
+                                                                base.OnRenderSizeChanged(sizeInfo);
             
             // sometimes OnRenderSizeChanged happens before OnLoaded.
-            Start();
+                Start();
             ResetBackBufferReference();
         }
 
