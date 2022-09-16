@@ -1,8 +1,7 @@
 ﻿using System.Windows;
 
-namespace MonoGame.WpfCore
+namespace MonoGame.WpfCore;
+
+public partial class App : Application
 {
-    public partial class App : Application
-    {
-    }
 }

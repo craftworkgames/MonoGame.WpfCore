@@ -2,12 +2,16 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <LangVersion>10</LangVersion>
+    <WarningsAsErrors>Nullable</WarningsAsErrors>
     <UseWPF>true</UseWPF>
   </PropertyGroup>
-  
+
   <ItemGroup>
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.1.303" />
     <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.1.303" />
+    <PackageReference Include="SharpDX" Version="4.2.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -15,31 +19,22 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Icon.ico" />
+    <None Remove="Icon.bmp" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Icon.ico" />
+    <EmbeddedResource Include="Icon.bmp" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="NewFolder\" />
+  </ItemGroup>
+
+  <ItemGroup>
     <MonoGameContentReference Include="..\gamelib\Content\Content.mgcb" Link="Content\Content.mgcb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </MonoGameContentReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\pup10\Branches\ShadowTool2\Source Codes\PropertyGrid\WPFGrid.csproj" />
-    <ProjectReference Include="..\core20s\core20s.csproj" />
-    <ProjectReference Include="..\gamelib\gamelib.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="DevComponents.WpfDock">
-      <HintPath>Dependencies\DevComponents.WpfDock.dll</HintPath>
-    </Reference>
-    <Reference Include="DevComponents.WpfEditors">
-      <HintPath>Dependencies\DevComponents.WpfEditors.dll</HintPath>
-    </Reference>
-    <Reference Include="DevComponents.WpfRibbon">
-      <HintPath>Dependencies\DevComponents.WpfRibbon.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Content\bin\Windows\Content\" />
-    <Folder Include="Content\obj\" />
   </ItemGroup>
 </Project>
