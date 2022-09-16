@@ -30,7 +30,7 @@ public class MainWindowViewModel : MonoGameViewModel
 
     public override void Draw(GameTime gameTime)
     {
-        GraphicsDevice.Clear(Color.Beige);
+        GraphicsDevice.Clear(Color.Yellow);
 
         _spriteBatch.Begin();
         _spriteBatch.Draw(_texture, _position, null, Color.White, _rotation, _origin, _scale, SpriteEffects.None, 0f);
