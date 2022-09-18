@@ -1,0 +1,8 @@
+[DEFAULT]
+BASEURL=http://www.devcomponents.com/
+
+[InternetShortcut]
+URL=http://www.devcomponents.com/customeronly/forum
+Modified=50A6F4034F47C40148
+IconFile=http://www.devcomponents.com/favicon.ico
+IconIndex=1
