@@ -13,7 +13,7 @@ This template uses .NET 6 and MonoGame 3.8.1.
 To install the `dotnet new` template, clone this repository locally and [install the template from a local directory](https://docs.microsoft.com/en-us/dotnet/core/tools/custom-templates#to-install-a-template-from-a-file-system-directory).
 
 ```
-dotnet new -i MonoGame.WpfCore\
+dotnet new install MonoGame.WpfCore
 ```
 
 After the template is installed you should see it in the list. To create a new project, first create an empty directory then run the template.
