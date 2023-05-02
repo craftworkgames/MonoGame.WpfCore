@@ -54,13 +54,15 @@ All of the code used to embed MonoGame in WPF is included in this template. You 
 ### To Create a new Window
 
 ```xaml
-<monoGameControls:MonoGameContentControl Window="Set this value" />
+<Window  x:Name="This"> <!-- Type your control ID here -->
+    <monoGameControls:MonoGameContentControl Window="{x:Reference This}" /> <!-- Retype it here -->
+</Window>
 ```
 or
 ```csharp
 Content = new MonoGameContentControl()
 {
-    Window = ... //current window
+    Window = this, // current window
 };
 ```
 The `Window` property is already set to `App.Current.MainWindow`
