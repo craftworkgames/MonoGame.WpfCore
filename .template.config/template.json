@@ -16,6 +16,7 @@
             ".git/**",
             "**/.idea/**",
             "**/*.user"
-        ]
+        ],
+        "source": "./MonoGame.WpfCore/"
     }]
 }

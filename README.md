@@ -30,23 +30,39 @@ dotnet new monogamewpf
 
 All done! Open the solution and run the project.
 
-## Simple. 
+## Simple.
 
 There's no magic here.
 
  - The WPF project references the official [`MonoGame.Framework.WindowsDX` NuGet package](https://www.nuget.org/packages/MonoGame.Framework.WindowsDX/). The same package can be used in your game.
- - There's only a handful of files required to do the heavy lifting. 
+ - There's only a handful of files required to do the heavy lifting.
  - The `MonoGameContentControl` is a standard WPF control in every other way.
 
-## Modern. 
+## Modern.
 
 I've been using and refining the `MonoGameContentControl` in my own projects for many years. Everything else in this template was built from the ground up using the latest .NET technologies.
 
  - Thanks to the new `UseWPF` flag introduced in .NET Core 3.0 we can build WPF projects in the new `csproj` format.
- 
+
 ## Customizable.
 
-All of the code used to embed MonoGame in WPF is included in this template. You can edit and customize it however you like. 
+All of the code used to embed MonoGame in WPF is included in this template. You can edit and customize it however you like.
 
  - The template includes a `MonoGameViewModel` as an example of how to get started. If you use a different view model architecture, just change it.
  - The project references the `MonoGame.Content.Builder` package so that it can automatically build your `Content.mgcb` file. You can load content using the `Content` manager just like you do in your games. If your editor doesn't need this you can simply remove it.
+
+### To Create a new Window
+
+```xaml
+<Window  x:Name="This"> <!-- Type your control ID here -->
+    <monoGameControls:MonoGameContentControl Window="{x:Reference This}" /> <!-- Retype it here -->
+</Window>
+```
+or
+```csharp
+Content = new MonoGameContentControl()
+{
+    Window = this, // current window
+};
+```
+The `Window` property is already set to `App.Current.MainWindow`

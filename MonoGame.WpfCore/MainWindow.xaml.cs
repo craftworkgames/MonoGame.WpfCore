@@ -1,12 +1,11 @@
 ﻿using System.Windows;
 
-namespace MonoGame.WpfCore
+namespace MonoGame.WpfCore;
+
+public partial class MainWindow : Window
 {
-    public partial class MainWindow : Window
+    public MainWindow()
     {
-        public MainWindow()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

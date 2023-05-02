@@ -1,4 +1,4 @@
-﻿<Window 
+﻿<Window
     x:Class="MonoGame.WpfCore.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -7,13 +7,10 @@
     xmlns:monoGameControls="clr-namespace:MonoGame.WpfCore.MonoGameControls"
     xmlns:local="clr-namespace:MonoGame.WpfCore"
     mc:Ignorable="d"
-    Title="MonoGame.WpfCore" 
+    Title="MonoGame.WpfCore"
     WindowStartupLocation="CenterScreen"
     Width="800"
     Height="480">
-    <Window.DataContext>
-        <local:MainWindowViewModel />
-    </Window.DataContext>
 
     <DockPanel LastChildFill="True">
         <Menu DockPanel.Dock="Top">
@@ -42,6 +39,23 @@
             </MenuItem>
         </Menu>
 
-        <monoGameControls:MonoGameContentControl />
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <monoGameControls:MonoGameContentControl Grid.Column="0">
+                <monoGameControls:MonoGameContentControl.DataContext>
+                    <local:MainWindowViewModel />
+                </monoGameControls:MonoGameContentControl.DataContext>
+            </monoGameControls:MonoGameContentControl>
+
+            <monoGameControls:MonoGameContentControl Grid.Column="1">
+                <monoGameControls:MonoGameContentControl.DataContext>
+                    <local:MainWindowViewModel />
+                </monoGameControls:MonoGameContentControl.DataContext>
+            </monoGameControls:MonoGameContentControl>
+        </Grid>
     </DockPanel>
 </Window>
