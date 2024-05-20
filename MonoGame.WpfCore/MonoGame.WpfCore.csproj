@@ -1,17 +1,30 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net472</TargetFramework>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <LangVersion>10</LangVersion>
+    <WarningsAsErrors>Nullable</WarningsAsErrors>
     <UseWPF>true</UseWPF>
   </PropertyGroup>
-  
+
   <ItemGroup>
-    <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.7.1.189" />
-    <PackageReference Include="MonoGame.Content.Builder" Version="3.7.0.8" />
+    <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.0.1641" />
+    <PackageReference Include="MonoGame.Content.Builder" Version="3.7.0.9" />
     <PackageReference Include="SharpDX" Version="4.2.0" />
   </ItemGroup>
 
   <ItemGroup>
     <MonoGameContentReference Include="**\*.mgcb" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Icon.ico" />
+    <None Remove="Icon.bmp" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Icon.ico" />
+    <EmbeddedResource Include="Icon.bmp" />
   </ItemGroup>
 </Project>
