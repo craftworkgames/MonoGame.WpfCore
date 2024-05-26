@@ -6,7 +6,11 @@ MonoGame embedded inside a WPF app as a `dotnet new` template.
 
 ## Prerequisites
 
-This template uses .NET 6 and MonoGame 3.8.1.
+This template uses .NET Core 6. If you're having trouble getting it to compile make sure you've updated to the latest version. I have confirmed that it works with:
+
+ - Visual Studio 2022 or later.
+ - [.NET Core 6.0.422](https://dotnet.microsoft.com/download/dotnet-core/6.0) which should install with Visual Studio anyway.
+ - The MonoGame NuGet packages are not .NET Core compatible, so you'll also need .NET Framework 4.7.2 installed.
 
 ## Installing the template
 
