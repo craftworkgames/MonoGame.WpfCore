@@ -13,6 +13,7 @@ public class MainWindowViewModel : MonoGameViewModel
     private float _rotation;
     private Vector2 _origin;
     private Vector2 _scale;
+    private float _rotationSign = 1;
 
     public override void LoadContent()
     {
@@ -20,10 +21,15 @@ public class MainWindowViewModel : MonoGameViewModel
         _texture = Content.Load<Texture2D>("monogame-logo");
     }
 
+    public override void OnMouseUp(MouseStateArgs mouseState)
+    {
+        _rotationSign *= -1;
+    }
+
     public override void Update(GameTime gameTime)
     {
         _position = GraphicsDevice.Viewport.Bounds.Center.ToVector2();
-        _rotation = (float)Math.Sin(gameTime.TotalGameTime.TotalSeconds) / 4f;
+        _rotation = (float)Math.Sin(_rotationSign*gameTime.TotalGameTime.TotalSeconds) / 4f;
         _origin = _texture.Bounds.Center.ToVector2();
         _scale = Vector2.One;
     }

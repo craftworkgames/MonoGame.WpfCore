@@ -23,6 +23,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using Microsoft.Xna.Framework;
@@ -92,6 +93,12 @@ public sealed class MonoGameContentControl : ContentControl, IDisposable
         Dispose(false);
     }
 
+    protected override void OnDrop(DragEventArgs e)
+    {
+        _viewModel?.OnDrop(new DragStateArgs(this, e));
+        base.OnDrop(e);
+    }
+
     protected override void OnGotFocus(RoutedEventArgs e)
     {
         _viewModel?.OnActivated(this, EventArgs.Empty);
@@ -102,6 +109,30 @@ public sealed class MonoGameContentControl : ContentControl, IDisposable
     {
         _viewModel?.OnDeactivated(this, EventArgs.Empty);
         base.OnLostFocus(e);
+    }
+
+    protected override void OnMouseDown(MouseButtonEventArgs e)
+    {
+        _viewModel?.OnMouseDown(new MouseStateArgs(this, e));
+        base.OnMouseDown(e);
+    }
+
+    protected override void OnMouseMove(MouseEventArgs e)
+    {
+        _viewModel?.OnMouseMove(new MouseStateArgs(this, e));
+        base.OnMouseMove(e);
+    }
+        
+    protected override void OnMouseUp(MouseButtonEventArgs e)
+    {
+        _viewModel?.OnMouseUp(new MouseStateArgs(this, e));
+        base.OnMouseUp(e);
+    }
+
+    protected override void OnMouseWheel(MouseWheelEventArgs e)
+    {
+        _viewModel?.OnMouseWheel(new MouseStateArgs(this, e), e.Delta);
+        base.OnMouseWheel(e);
     }
 
     private void Start()
