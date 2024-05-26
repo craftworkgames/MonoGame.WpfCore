@@ -21,6 +21,13 @@ public interface IMonoGameViewModel : IDisposable
     void OnDeactivated(object sender, EventArgs args);
     void OnExiting(object sender, EventArgs args);
 
+    void OnMouseDown(MouseStateArgs mouseState);
+    void OnMouseMove(MouseStateArgs mouseState);
+    void OnMouseUp(MouseStateArgs mouseState);
+
+    void OnDrop(DragStateArgs dragState);
+    void OnMouseWheel(MouseStateArgs args, int delta);
+
     void SizeChanged(object sender, SizeChangedEventArgs args);
 }
 
@@ -83,5 +90,10 @@ public class MonoGameViewModel : ViewModel, IMonoGameViewModel
     public virtual void OnActivated(object sender, EventArgs args) { }
     public virtual void OnDeactivated(object sender, EventArgs args) { }
     public virtual void OnExiting(object sender, EventArgs args) { }
+    public virtual void OnMouseDown(MouseStateArgs mouseState) { }
+    public virtual void OnMouseMove(MouseStateArgs mouseState) { }
+    public virtual void OnMouseUp(MouseStateArgs mouseState) { }
+    public virtual void OnMouseWheel(MouseStateArgs args, int delta) { }
+    public virtual void OnDrop(DragStateArgs dragState) { }
     public virtual void SizeChanged(object sender, SizeChangedEventArgs args) { }
 }
