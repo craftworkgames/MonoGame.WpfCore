@@ -137,7 +137,7 @@ public sealed class MonoGameContentControl : ContentControl, IDisposable
 
     private void Start()
     {
-        if(_isInitialized)
+        if(_isInitialized || DesignerProperties.GetIsInDesignMode(this))
             return;
 
         if (Window == null)
